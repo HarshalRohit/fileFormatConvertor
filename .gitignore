@@ -1,0 +1,5 @@
+# node modules
+node_modules/
+
+# aws upload files
+*.zip
