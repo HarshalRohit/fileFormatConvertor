@@ -3,3 +3,6 @@ node_modules/
 
 # aws upload files
 *.zip
+
+# custom files
+error-413-file.txt

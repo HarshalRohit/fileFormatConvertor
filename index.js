@@ -20,15 +20,22 @@
 exports.handler = async (event, context) => {
 
 
-    const body = event['body']
-    if(!body){
-      const statusCode = 400;
-      const responseBody = {
-        status: 'error',
-        statusText: 'Request body empty',
-      };
-      return createResponseObj(statusCode, null, responseBody);
-    }
+  const body = event['body']
+  let { err, result } = parseBody(body);
+  
+  if(err){
+    const statusCode = 400;
+    const responseBody = {
+      status: 'error',
+      statusText: err,
+      body: ''
+    };
+    return createResponseObj(statusCode, null, responseBody);
+  }
+
+  const { sourceFormat, targetFormat, content } = result;
+
+  // if()
     
     /*
       Flow could be like this
@@ -48,11 +55,12 @@ exports.handler = async (event, context) => {
       
     */
   
-  const { sourceFormat, targetFormat, content } = parseBody(body);
-  console.log(body);
+  
+  
   const temp = {
     's': sourceFormat,
     't': targetFormat,
+    'content': content,
   };
 
   const responseBody = {
@@ -73,7 +81,22 @@ exports.handler = async (event, context) => {
 // for now just returns the same object
 //  but might change in future - after discussion
 const parseBody = (body) => {
-  return JSON.parse(body);
+  if(!body)
+    return { 'err': 'Request body empty.', 'result': null };
+
+  try {
+    bodyInJson = JSON.parse(body);
+  } catch (error) {
+    return { 'err': 'JSON parse error.', 'result': null }; // change to generic error later
+  }
+
+
+  const { sourceFormat, targetFormat, content } = bodyInJson;
+  if (!sourceFormat || !targetFormat || !content)
+    return { 'err': 'missing field params.', 'result': null }; // change to generic error later
+    
+  // seems repetitive task here
+  return { 'err': null, 'result': bodyInJson };
 };
 
 const createResponseObj = (statusCode, headers, body) => {
