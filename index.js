@@ -10,11 +10,29 @@
                 }
     
   The body js obj will include the following keys:
-    status  - true | false (will decide later whether to include or not)
-    message - short descriptive message
-    data    - the converted text
-  ** THINK AGAIN ABOUT THIS **
+    status  - 'error' | 'success'
+    statusText - short descriptive message
+    body    - the converted text
+  ** MAY CHANGE AFTER DISCUSSION **
     
+*/
+
+/*
+  Flow could be like this
+  Verify the body contents          - done
+    error if                        - done
+      body empty                    - done
+      required keys not present     - done
+  extract the contents              - done
+  decide the `'from format' and 'to format'
+    error if 
+      conversion not supported
+  parse in 'from format'
+    error in parsing
+  call converter of 'to format'
+    error should not occur here but lets see later
+  return the converted contents
+  
 */
 
 exports.handler = async (event, context) => {
@@ -33,29 +51,9 @@ exports.handler = async (event, context) => {
     return createResponseObj(statusCode, null, responseBody);
   }
 
-  const { sourceFormat, targetFormat, content } = result;
 
-  // if()
-    
-    /*
-      Flow could be like this
-      Verify the body contents
-        error if 
-          body empty
-          required keys not present
-      extract the contents
-      decide the `'from format' and 'to format'
-        error if 
-          conversion not supported
-      parse in 'from format'
-        error in parsing
-      call converter of 'to format'
-        error should not occur here but lets see later
-      return the converted contents
-      
-    */
-  
-  
+
+  const { sourceFormat, targetFormat, content } = result;
   
   const temp = {
     's': sourceFormat,
