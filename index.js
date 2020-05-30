@@ -37,10 +37,9 @@
 
 exports.handler = async (event, context) => {
 
+  const body = event['body'];
 
-  const body = event['body']
   let { err, result } = parseBody(body);
-  
   if(err){
     const statusCode = 400;
     const responseBody = {
@@ -51,23 +50,30 @@ exports.handler = async (event, context) => {
     return createResponseObj(statusCode, null, responseBody);
   }
 
-
-
-  const { sourceFormat, targetFormat, content } = result;
+  // const { sourceFormat, targetFormat, content } = result;
+  // parenthesis are required to use object destructuring feature
+  ({ err, result } = handleConversion(result));
   
-  const temp = {
-    's': sourceFormat,
-    't': targetFormat,
-    'content': content,
-  };
+  let statusCode, responseBody;
 
-  const responseBody = {
-    'status': 'success',
-    'statusText': 'Conversion success!!!',
-    'body': temp,
-  };
+  if(err){
+    statusCode = 400;
+    responseBody = {
+      status: 'error',
+      statusText: err,
+      result: '',
+    };
+
+  } else {
+    statusCode = 200;
+    responseBody = {
+      status: 'success',
+      statusText: 'Conversion successful.',
+      result: result,
+    };
+  }
   
-  return createResponseObj(200, null, responseBody);
+  return createResponseObj(statusCode, null, responseBody);
 };
 
 /*
@@ -76,8 +82,6 @@ exports.handler = async (event, context) => {
     target-format, 
     content
 */
-// for now just returns the same object
-//  but might change in future - after discussion
 const parseBody = (body) => {
   if(!body)
     return { 'err': 'Request body empty.', 'result': null };
@@ -85,7 +89,7 @@ const parseBody = (body) => {
   try {
     bodyInJson = JSON.parse(body);
   } catch (error) {
-    return { 'err': 'JSON parse error.', 'result': null }; // change to generic error later
+    return { 'err': 'Request body JSON parse error.', 'result': null }; // change to generic error later
   }
 
 
@@ -121,4 +125,82 @@ const createResponseObj = (statusCode, headers, body) => {
     response.body = JSON.stringify(body);
 
   return response;
+};
+
+const handleConversion = (body) => {
+  const supportedConversions = ['json2yaml', 'yaml2json'];
+  const { sourceFormat, targetFormat, content } = body;
+  
+  const currentConversion = sourceFormat.concat('2', targetFormat)
+  if(!supportedConversions.includes(currentConversion)){
+    let errText = 'source to target conversion not yet supported.';
+    
+    return { 'err': errText, 'result': null };
+  }
+
+  let err, result;
+  ({ err, result } = parseContent(sourceFormat, content));
+  if(err){
+    return { 'err': err, 'result': null };
+  }
+
+  ({ err, result } = convertContent(targetFormat, result));
+  if(err){
+    return { 'err': err, 'result': null };
+  }
+
+  return { 'err': null, 'result': result };
+};
+
+
+const parseContent = (sourceFormat, content) => {
+  let parser;
+  
+  switch(sourceFormat){
+    case "json":
+      parser = JSON.parse;
+      break;
+    case "yaml":
+      parser = require('js-yaml').safeLoad;
+      break;
+    default:
+      return { 'err': 'parser for source format not found.', 'result': null };
+  }
+
+  let result;
+  try {
+    parsedContent = parser(content);
+    result = { 'err': null, 'result': parsedContent };
+  } catch(e){
+    // err = e;
+    result = { 'err': 'cannot parse in source format.', 'result': null };
+  };
+
+  return result;
+};
+
+const convertContent = (targetFormat, parsedContent) => {
+  let convertor;
+  
+  switch(targetFormat){
+    case "json":
+      convertor = JSON.stringify;
+      break;
+    case "yaml":
+      convertor = require('js-yaml').safeDump;
+      break;
+    default:
+      return { 'err': 'convertor for target format not found.', 'result': null };
+  }
+
+  let result;
+  try {
+    convertedContent = convertor(parsedContent);
+    result = { 'err': null, 'result': convertedContent };
+  } catch(e){
+    // err = e;
+    result = { 'err': 'cannot convert to target format.', 'result': null };
+  }
+
+  return result;
 };
