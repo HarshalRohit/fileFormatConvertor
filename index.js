@@ -18,6 +18,7 @@
 */
 
 /*
+  *****JUST FOR REFERENCE*****
   Flow could be like this
   Verify the body contents          - done
     error if                        - done
@@ -45,13 +46,12 @@ exports.handler = async (event, context) => {
     const responseBody = {
       status: 'error',
       statusText: err,
-      body: ''
+      result: ''
     };
     return createResponseObj(statusCode, null, responseBody);
   }
 
-  // const { sourceFormat, targetFormat, content } = result;
-  // parenthesis are required to use object destructuring feature
+  // parenthesis are required to use es6 object destructuring 
   ({ err, result } = handleConversion(result));
   
   let statusCode, responseBody;
@@ -97,7 +97,6 @@ const parseBody = (body) => {
   if (!sourceFormat || !targetFormat || !content)
     return { 'err': 'missing field params.', 'result': null }; // change to generic error later
     
-  // seems repetitive task here
   return { 'err': null, 'result': bodyInJson };
 };
 
@@ -164,7 +163,8 @@ const parseContent = (sourceFormat, content) => {
       parser = require('js-yaml').safeLoad;
       break;
     default:
-      return { 'err': 'parser for source format not found.', 'result': null };
+      return { 'err': 'parser for source format not found.',
+               'result': null }; // can change to generic error
   }
 
   let result;
@@ -173,7 +173,8 @@ const parseContent = (sourceFormat, content) => {
     result = { 'err': null, 'result': parsedContent };
   } catch(e){
     // err = e;
-    result = { 'err': 'cannot parse in source format.', 'result': null };
+    result = { 'err': 'cannot parse content in source format.',
+               'result': null }; // can change to generic error
   };
 
   return result;
@@ -190,7 +191,8 @@ const convertContent = (targetFormat, parsedContent) => {
       convertor = require('js-yaml').safeDump;
       break;
     default:
-      return { 'err': 'convertor for target format not found.', 'result': null };
+      return { 'err': 'convertor for target format not found.',
+               'result': null }; // can change to generic error
   }
 
   let result;
@@ -199,7 +201,8 @@ const convertContent = (targetFormat, parsedContent) => {
     result = { 'err': null, 'result': convertedContent };
   } catch(e){
     // err = e;
-    result = { 'err': 'cannot convert to target format.', 'result': null };
+    result = { 'err': 'cannot convert content to target format.',
+               'result': null }; // can change to generic error
   }
 
   return result;
