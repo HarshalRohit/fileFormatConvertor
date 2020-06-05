@@ -1,0 +1,556 @@
+{
+	"info": {
+		"_postman_id": "48764e35-7869-4eae-a336-f1d6431e9f16",
+		"name": "formatConvertorTests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Errors",
+			"item": [
+				{
+					"name": "body parsing errors",
+					"item": [
+						{
+							"name": "request body is empty",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "2652c755-892d-4e9f-a3d7-d80906622108",
+										"exec": [
+											"const reqBody = {}",
+											"",
+											"pm.variables.set(\"reqBody\", JSON.stringify(reqBody));",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "ff18a8b7-e522-4b49-9392-06f47c62fb28",
+										"exec": [
+											"const statusText = 'request body empty.';",
+											"pm.test(`request body is empty: response_body.statusText has value \"${statusText}\"`, function(){",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.statusText).to.eql(statusText);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://sitz7wsrs3.execute-api.us-east-2.amazonaws.com/nodeSimpleHttp",
+									"protocol": "https",
+									"host": [
+										"sitz7wsrs3",
+										"execute-api",
+										"us-east-2",
+										"amazonaws",
+										"com"
+									],
+									"path": [
+										"nodeSimpleHttp"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "request body not in JSON",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "2652c755-892d-4e9f-a3d7-d80906622108",
+										"exec": [
+											"// const reqBody = 'asd';",
+											"const reqBody = {};",
+											"",
+											"pm.variables.set(\"reqBody\", reqBody);",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "ff18a8b7-e522-4b49-9392-06f47c62fb28",
+										"exec": [
+											"const statusText = 'request body JSON parse error.';",
+											"pm.test(`request body is not JSON: response_body.statusText has value \"${statusText}\"`, function(){",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.statusText).to.eql(statusText);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{{reqBody}}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://sitz7wsrs3.execute-api.us-east-2.amazonaws.com/nodeSimpleHttp",
+									"protocol": "https",
+									"host": [
+										"sitz7wsrs3",
+										"execute-api",
+										"us-east-2",
+										"amazonaws",
+										"com"
+									],
+									"path": [
+										"nodeSimpleHttp"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "request body is missing fields",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "32551f76-49dc-41b4-bb82-9f86f2d12c8c",
+										"exec": [
+											"const content = `---",
+											"foo: bar",
+											"baz:",
+											"  - qux",
+											"  - quxx",
+											"corge: null",
+											"grault: 1",
+											"garply: true",
+											"waldo: \"false\"",
+											"fred: undefined",
+											"`;",
+											"",
+											"// can remove one or more",
+											"const reqBody = {",
+											"\t// \"sourceFormat\": \"yaml\",",
+											"\t// \"targetFormat\": \"json\",",
+											"\t// \"content\": content,",
+											"};",
+											"",
+											"",
+											"pm.variables.set(\"reqBody\", JSON.stringify(reqBody));",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "ffdc6d2c-919c-4e84-bd33-99f6ff000b91",
+										"exec": [
+											"const statusText = 'missing field params.';",
+											"pm.test(`request body is missing fields: response_body.statusText has value \"${statusText}\"`, function(){",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.statusText).to.eql(statusText);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{{reqBody}}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://sitz7wsrs3.execute-api.us-east-2.amazonaws.com/nodeSimpleHttp",
+									"protocol": "https",
+									"host": [
+										"sitz7wsrs3",
+										"execute-api",
+										"us-east-2",
+										"amazonaws",
+										"com"
+									],
+									"path": [
+										"nodeSimpleHttp"
+									]
+								},
+								"description": "Request body object doesn't have one or more of the keys expected."
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "conversion errors",
+					"item": [
+						{
+							"name": "conversion not supported",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "32551f76-49dc-41b4-bb82-9f86f2d12c8c",
+										"exec": [
+											"const content = `---",
+											"foo: bar",
+											"baz:",
+											"  - qux",
+											"  - quxx",
+											"corge: null",
+											"grault: 1",
+											"garply: true",
+											"waldo: \"false\"",
+											"fred: undefined",
+											"`;",
+											"",
+											"// can set to some unknown 'sourceFormat' ",
+											"//  and/or 'targetFormat'",
+											"// content will not be checked ",
+											"const reqBody = {",
+											"\t\"sourceFormat\": \"yml\",",
+											"\t\"targetFormat\": \"json\",",
+											"\t\"content\": content,",
+											"};",
+											"",
+											"",
+											"pm.variables.set(\"reqBody\", JSON.stringify(reqBody));",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "ffdc6d2c-919c-4e84-bd33-99f6ff000b91",
+										"exec": [
+											"const statusText = 'source to target conversion not yet supported.';",
+											"pm.test(`conversion unsupported: response_body.statusText has value \"${statusText}\"`, function(){",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.statusText).to.eql(statusText);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{{reqBody}}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://sitz7wsrs3.execute-api.us-east-2.amazonaws.com/nodeSimpleHttp",
+									"protocol": "https",
+									"host": [
+										"sitz7wsrs3",
+										"execute-api",
+										"us-east-2",
+										"amazonaws",
+										"com"
+									],
+									"path": [
+										"nodeSimpleHttp"
+									]
+								},
+								"description": "thrown when 'sourceFormat' and/or 'targetFormat'  is set to some random values.\n"
+							},
+							"response": []
+						},
+						{
+							"name": "parsing error",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "32551f76-49dc-41b4-bb82-9f86f2d12c8c",
+										"exec": [
+											"const content = `---",
+											"<note>",
+											"\t<to>Tove</to>",
+											"\t<from>Jani</from>",
+											"\t<heading>Reminder</heading>",
+											"\t<body>Don't forget me this weekend!</body>",
+											"</note>",
+											"`;",
+											"",
+											"",
+											"const reqBody = {",
+											"\t\"sourceFormat\": \"json\",",
+											"\t\"targetFormat\": \"yaml\",",
+											"\t\"content\": content,",
+											"};",
+											"",
+											"",
+											"pm.variables.set(\"reqBody\", JSON.stringify(reqBody));",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "ffdc6d2c-919c-4e84-bd33-99f6ff000b91",
+										"exec": [
+											"const statusText = 'cannot parse content in source format.';",
+											"pm.test(`parsing error: response_body.statusText has value \"${statusText}\"`, function(){",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.statusText).to.eql(statusText);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{{reqBody}}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://sitz7wsrs3.execute-api.us-east-2.amazonaws.com/nodeSimpleHttp",
+									"protocol": "https",
+									"host": [
+										"sitz7wsrs3",
+										"execute-api",
+										"us-east-2",
+										"amazonaws",
+										"com"
+									],
+									"path": [
+										"nodeSimpleHttp"
+									]
+								},
+								"description": "When _content_ cannot be parsed in _sourceFormat_"
+							},
+							"response": []
+						}
+					],
+					"description": "Errors raised when actual conversion is being performed. <br />\nFor eg: <br />\n    + when support for a conversion is not yet added.\n    + when _content_ cannot be parsed in source format.",
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "16d3face-4ae8-43d5-9116-ab34d9f0c4b0",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "ce8873a0-b993-46f8-bb99-ec081da518ae",
+						"type": "text/javascript",
+						"exec": [
+							"const statusCode = 400",
+							"pm.test(`response status code is ${statusCode}`, function(){",
+							"    pm.expect(pm.response.to.have.status(statusCode));",
+							"});",
+							"",
+							"const status = 'error';",
+							"pm.test(`response_body.status has value \"${status}\"`, function(){",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql(status);",
+							"});",
+							"",
+							"pm.test(`response_body.result is empty`, function(){",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.result).to.eql('');",
+							"})"
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "valid Request",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "dae73fec-5483-43db-915c-fdfe4c9f122c",
+						"exec": [
+							"const content = `---",
+							"foo: bar",
+							"baz:",
+							"  - qux",
+							"  - quxx",
+							"corge: null",
+							"grault: 1",
+							"garply: true",
+							"waldo: \"false\"",
+							"fred: undefined",
+							"`;",
+							"",
+							"const reqBody = {",
+							"\t\"sourceFormat\": \"yaml\",",
+							"\t\"targetFormat\": \"json\",",
+							"\t\"content\": content",
+							"};",
+							"",
+							"pm.variables.set(\"reqBody\", JSON.stringify(reqBody));",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b85d33d-b35f-43e4-95fe-11f9482335db",
+						"exec": [
+							"const statusCode = 200;",
+							"pm.test(`response status code is ${statusCode}`, function(){",
+							"    pm.expect(pm.response.to.have.status(statusCode));",
+							"});",
+							"",
+							"const status = 'success';",
+							"pm.test(`response_body.status has value \"${status}\"`, function(){",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql(status);",
+							"});",
+							"",
+							"const statusText = 'conversion successful.';",
+							"pm.test(`response_body.statusText has value \"${statusText}\"`, function(){",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.statusText).to.eql(statusText);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{reqBody}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://sitz7wsrs3.execute-api.us-east-2.amazonaws.com/nodeSimpleHttp",
+					"protocol": "https",
+					"host": [
+						"sitz7wsrs3",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"nodeSimpleHttp"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "19b697c4-db2a-4161-a87b-2274e63bcfe8",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "978c7e1d-ea48-42dc-9385-abc43eec2cc1",
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(`response body is JSON`, function(){    ",
+					"    pm.expect(pm.response.to.have.jsonBody());",
+					"});",
+					"",
+					"pm.test(`response \"content-Type\" header is \"application/json\"`, function(){",
+					"    pm.expect(pm.response.to.have.header('Content-Type', 'application/json'));",
+					"});",
+					"",
+					"pm.test(`response body has valid structure`, function(){",
+					"    const schema = {",
+					"        \"type\": \"object\",",
+					"        \"properties\": {",
+					"            \"status\": { \"type\": \"string\" },",
+					"            \"statusText\": { \"type\": \"string\" },",
+					"            \"result\": { \"type\": \"string\" },",
+					"        },",
+					"        \"required\": [\"status\", \"statusText\", \"result\"],",
+					"    };",
+					"    pm.expect(pm.response.to.have.jsonSchema(schema));",
+					"})"
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

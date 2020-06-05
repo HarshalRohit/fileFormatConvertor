@@ -68,7 +68,7 @@ exports.handler = async (event, context) => {
     statusCode = 200;
     responseBody = {
       status: 'success',
-      statusText: 'Conversion successful.',
+      statusText: 'conversion successful.',
       result: result,
     };
   }
@@ -84,12 +84,12 @@ exports.handler = async (event, context) => {
 */
 const parseBody = (body) => {
   if(!body)
-    return { 'err': 'Request body empty.', 'result': null };
+    return { 'err': 'request body empty.', 'result': null };
 
   try {
     bodyInJson = JSON.parse(body);
   } catch (error) {
-    return { 'err': 'Request body JSON parse error.', 'result': null }; // change to generic error later
+    return { 'err': 'request body JSON parse error.', 'result': null }; // change to generic error later
   }
 
 
@@ -163,6 +163,7 @@ const parseContent = (sourceFormat, content) => {
       parser = require('js-yaml').safeLoad;
       break;
     default:
+      // will not reach here, as already handled in handleConversion
       return { 'err': 'parser for source format not found.',
                'result': null }; // can change to generic error
   }
@@ -170,6 +171,7 @@ const parseContent = (sourceFormat, content) => {
   let result;
   try {
     parsedContent = parser(content);
+    console.log(parsedContent);
     result = { 'err': null, 'result': parsedContent };
   } catch(e){
     // err = e;
@@ -198,6 +200,7 @@ const convertContent = (targetFormat, parsedContent) => {
   let result;
   try {
     convertedContent = convertor(parsedContent);
+    console.log(convertedContent);
     result = { 'err': null, 'result': convertedContent };
   } catch(e){
     // err = e;

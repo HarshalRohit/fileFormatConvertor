@@ -18,7 +18,7 @@ zip -r temp.zip . -x '*.git*' 'Info.md' './tests*'
 ### combined commands
 ```
 rm temp.zip
-zip -r temp.zip . -i 'node_modules/*' 'index.js' 'test.js'
+zip -r temp.zip . -i 'node_modules/*' 'index.js'
 aws lambda update-function-code \
  --function-name nodeSimpleHttp \
  --zip-file fileb://temp.zip
