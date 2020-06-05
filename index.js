@@ -171,7 +171,7 @@ const parseContent = (sourceFormat, content) => {
   let result;
   try {
     parsedContent = parser(content);
-    console.log(parsedContent);
+    
     result = { 'err': null, 'result': parsedContent };
   } catch(e){
     // err = e;
@@ -200,7 +200,7 @@ const convertContent = (targetFormat, parsedContent) => {
   let result;
   try {
     convertedContent = convertor(parsedContent);
-    console.log(convertedContent);
+    
     result = { 'err': null, 'result': convertedContent };
   } catch(e){
     // err = e;

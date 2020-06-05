@@ -1,0 +1,33 @@
+Testing 
+
+Response should always be json
+Response Body should always have 3 keys:
+    status, statusText, result
+Errors
+    response status should be 400
+    response_body.status should be 'error'
+    response_body.result should be empty string
+
+    Body Parsing Errors
+        Body empty
+            response_body.statusText should be 'request body empty.'
+
+        Request body not in JSON
+            response_body.statusText should be 'request body JSON parse error.'
+
+        missing keys
+            response_body.statusText should be 'missing field params.'
+
+    Conversion Errors
+        Conversion not supported
+            response_body.statusText should be 'source to target conversion not yet supported.'
+        
+        Parsing Error
+            response_body.statusText should be 'cannot parse content in source format.'
+
+
+
+
+Conversion supported or not 
+Parsing in source formate
+response_body.statusText should be ''
