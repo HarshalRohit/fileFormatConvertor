@@ -1,41 +1,3 @@
-/*
-  Response Format - AWS 
-    need to http status code in statusCode field
-    any headers if required then in separate js obj
-    body in js obj
-    Eg: 
-    response = {  statusCode: 404, 
-                  headers: {},
-                  body: {}
-                }
-    
-  The body js obj will include the following keys:
-    status  - 'error' | 'success'
-    statusText - short descriptive message
-    body    - the converted text
-  ** MAY CHANGE AFTER DISCUSSION **
-    
-*/
-
-/*
-  *****JUST FOR REFERENCE*****
-  Flow could be like this
-  Verify the body contents          - done
-    error if                        - done
-      body empty                    - done
-      required keys not present     - done
-  extract the contents              - done
-  decide the `'from format' and 'to format'
-    error if 
-      conversion not supported
-  parse in 'from format'
-    error in parsing
-  call converter of 'to format'
-    error should not occur here but lets see later
-  return the converted contents
-  
-*/
-
 exports.handler = async (event, context) => {
 
   const body = event['body'];
@@ -85,17 +47,18 @@ exports.handler = async (event, context) => {
 const parseBody = (body) => {
   if(!body)
     return { 'err': 'request body empty.', 'result': null };
-
+  
+  let bodyInJson;
+  
   try {
     bodyInJson = JSON.parse(body);
   } catch (error) {
-    return { 'err': 'request body JSON parse error.', 'result': null }; // change to generic error later
+    return { 'err': 'request body JSON parse error.', 'result': null }; // can change to generic error
   }
-
 
   const { sourceFormat, targetFormat, content } = bodyInJson;
   if (!sourceFormat || !targetFormat || !content)
-    return { 'err': 'missing field params.', 'result': null }; // change to generic error later
+    return { 'err': 'missing field params.', 'result': null }; // can change to generic error
     
   return { 'err': null, 'result': bodyInJson };
 };
@@ -103,7 +66,7 @@ const parseBody = (body) => {
 const createResponseObj = (statusCode, headers, body) => {
   
   const defaultStatusCode = 200;
-  const defualtHeaders = { 'content-type': 'application/json' };
+  const defaultHeaders = { 'content-type': 'application/json' };
   const defaultBody = {};
 
   let response = {}
@@ -114,7 +77,7 @@ const createResponseObj = (statusCode, headers, body) => {
     response.statusCode = statusCode;
 
   if(headers === null)
-    response.headers = defualtHeaders;
+    response.headers = defaultHeaders;
   else
     response.headers = headers;
 
@@ -136,9 +99,15 @@ const handleConversion = (body) => {
     
     return { 'err': errText, 'result': null };
   }
-
+  
   let err, result;
-  ({ err, result } = parseContent(sourceFormat, content));
+  ({ err, result } = preprocessContent(sourceFormat, content));
+  // err will not occur but can be useful in future
+  if(err){
+    return { 'err': err, 'result': null };
+  }
+  
+  ({ err, result } = parseContent(sourceFormat, result));
   if(err){
     return { 'err': err, 'result': null };
   }
@@ -151,11 +120,46 @@ const handleConversion = (body) => {
   return { 'err': null, 'result': result };
 };
 
+// keeping the return format similar to other methods 
+//  in handleConversion
+const preprocessContent = (srcFormat, content) => {
+  
+  // Perform preprocessing for required formats
+  let res;
+  switch(srcFormat){
+    case "yaml":
+      // replace double quotes around regex strings with 
+      //  single quotes
+      // Algo: search for the string that contains
+      //  "/ and /", 
+      //  replace the double quotes with single quotes
+      //  repeat till no such match remains
+      // CAN BE OPTIMIZED, WILL LOOK LATER
+      while (content.search(/("\/).*(\/")/) != -1) {
+        let matchObj = content.match(/("\/).*(\/")/);
+        let startIdx = matchObj.index
+        let endIdx = startIdx + matchObj[0].length
 
-const parseContent = (sourceFormat, content) => {
+        content = content.slice(0, startIdx) + `'` + 
+          content.slice(startIdx+1, endIdx-1) + `'` + 
+          content.slice(endIdx)
+
+      }
+      res = content
+      break;
+
+    default:
+      // No error 
+      res = content
+  }
+  
+  return { 'err': null, 'result': res }; 
+}
+
+const parseContent = (srcFormat, content) => {
   let parser;
   
-  switch(sourceFormat){
+  switch(srcFormat){
     case "json":
       parser = JSON.parse;
       break;
@@ -170,7 +174,7 @@ const parseContent = (sourceFormat, content) => {
 
   let result;
   try {
-    parsedContent = parser(content);
+    const parsedContent = parser(content);
     
     result = { 'err': null, 'result': parsedContent };
   } catch(e){
@@ -199,7 +203,7 @@ const convertContent = (targetFormat, parsedContent) => {
 
   let result;
   try {
-    convertedContent = convertor(parsedContent);
+    const convertedContent = convertor(parsedContent);
     
     result = { 'err': null, 'result': convertedContent };
   } catch(e){

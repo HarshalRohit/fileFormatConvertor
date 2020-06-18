@@ -55,17 +55,9 @@
 									}
 								},
 								"url": {
-									"raw": "https://sitz7wsrs3.execute-api.us-east-2.amazonaws.com/nodeSimpleHttp",
-									"protocol": "https",
+									"raw": "{{url}}",
 									"host": [
-										"sitz7wsrs3",
-										"execute-api",
-										"us-east-2",
-										"amazonaws",
-										"com"
-									],
-									"path": [
-										"nodeSimpleHttp"
+										"{{url}}"
 									]
 								}
 							},
@@ -79,8 +71,8 @@
 									"script": {
 										"id": "2652c755-892d-4e9f-a3d7-d80906622108",
 										"exec": [
-											"// const reqBody = 'asd';",
-											"const reqBody = {};",
+											"const reqBody = 'asd';",
+											"// const reqBody = {};",
 											"",
 											"pm.variables.set(\"reqBody\", reqBody);",
 											"",
@@ -109,7 +101,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{{reqBody}}",
+									"raw": "{{req_body_empty}}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -117,17 +109,9 @@
 									}
 								},
 								"url": {
-									"raw": "https://sitz7wsrs3.execute-api.us-east-2.amazonaws.com/nodeSimpleHttp",
-									"protocol": "https",
+									"raw": "{{url}}",
 									"host": [
-										"sitz7wsrs3",
-										"execute-api",
-										"us-east-2",
-										"amazonaws",
-										"com"
-									],
-									"path": [
-										"nodeSimpleHttp"
+										"{{url}}"
 									]
 								}
 							},
@@ -156,8 +140,8 @@
 											"// can remove one or more",
 											"const reqBody = {",
 											"\t// \"sourceFormat\": \"yaml\",",
-											"\t// \"targetFormat\": \"json\",",
-											"\t// \"content\": content,",
+											"\t\"targetFormat\": \"json\",",
+											"\t\"content\": content,",
 											"};",
 											"",
 											"",
@@ -196,17 +180,9 @@
 									}
 								},
 								"url": {
-									"raw": "https://sitz7wsrs3.execute-api.us-east-2.amazonaws.com/nodeSimpleHttp",
-									"protocol": "https",
+									"raw": "{{url}}",
 									"host": [
-										"sitz7wsrs3",
-										"execute-api",
-										"us-east-2",
-										"amazonaws",
-										"com"
-									],
-									"path": [
-										"nodeSimpleHttp"
+										"{{url}}"
 									]
 								},
 								"description": "Request body object doesn't have one or more of the keys expected."
@@ -285,17 +261,9 @@
 									}
 								},
 								"url": {
-									"raw": "https://sitz7wsrs3.execute-api.us-east-2.amazonaws.com/nodeSimpleHttp",
-									"protocol": "https",
+									"raw": "{{url}}",
 									"host": [
-										"sitz7wsrs3",
-										"execute-api",
-										"us-east-2",
-										"amazonaws",
-										"com"
-									],
-									"path": [
-										"nodeSimpleHttp"
+										"{{url}}"
 									]
 								},
 								"description": "thrown when 'sourceFormat' and/or 'targetFormat'  is set to some random values.\n"
@@ -362,17 +330,9 @@
 									}
 								},
 								"url": {
-									"raw": "https://sitz7wsrs3.execute-api.us-east-2.amazonaws.com/nodeSimpleHttp",
-									"protocol": "https",
+									"raw": "{{url}}",
 									"host": [
-										"sitz7wsrs3",
-										"execute-api",
-										"us-east-2",
-										"amazonaws",
-										"com"
-									],
-									"path": [
-										"nodeSimpleHttp"
+										"{{url}}"
 									]
 								},
 								"description": "When _content_ cannot be parsed in _sourceFormat_"
@@ -494,17 +454,9 @@
 					}
 				},
 				"url": {
-					"raw": "https://sitz7wsrs3.execute-api.us-east-2.amazonaws.com/nodeSimpleHttp",
-					"protocol": "https",
+					"raw": "{{url}}",
 					"host": [
-						"sitz7wsrs3",
-						"execute-api",
-						"us-east-2",
-						"amazonaws",
-						"com"
-					],
-					"path": [
-						"nodeSimpleHttp"
+						"{{url}}"
 					]
 				}
 			},
@@ -550,6 +502,14 @@
 					"})"
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"id": "0c13d348-7e88-4100-8dcd-1263653296b7",
+			"key": "url",
+			"value": "https://m5ju2ktnxe.execute-api.us-east-2.amazonaws.com/nodeSimpleHttp",
+			"type": "string"
 		}
 	],
 	"protocolProfileBehavior": {}

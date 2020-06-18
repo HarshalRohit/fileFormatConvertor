@@ -1,7 +1,7 @@
 # This file will contain frequently used commands and links
 ### update function
 ```
-aws lambda update-function-code --function-name nodeSimpleHttp \
+aws lambda update-function-code --function-name formatConvert \
  --zip-file fileb://temp.zip
 ```
 
@@ -20,7 +20,7 @@ zip -r temp.zip . -x '*.git*' 'Info.md' './tests*'
 rm temp.zip
 zip -r temp.zip . -i 'node_modules/*' 'index.js'
 aws lambda update-function-code \
- --function-name nodeSimpleHttp \
+ --function-name formatConvert \
  --zip-file fileb://temp.zip
  
 ```
