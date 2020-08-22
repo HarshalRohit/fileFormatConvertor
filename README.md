@@ -15,9 +15,9 @@ URL: https://m5ju2ktnxe.execute-api.us-east-2.amazonaws.com/formatConvert <br />
 Make a post request to the above URL,  with **content-type** header set to **application/json** and set the body as shown in example below:
 ```json
 {
-	"sourceFormat": "yaml", // current format
-	"targetFormat": "json", // format to convert to 
-	"content": "---\nfoo: bar\nbaz: \n  - qux\n  - asda\n "
+  "sourceFormat": "yaml", 
+  "targetFormat": "json", 
+  "content": "---\nfoo: bar\nbaz: \n  - qux\n  - asda\n "
 }
 ```
 
