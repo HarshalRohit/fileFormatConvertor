@@ -1,4 +1,4 @@
-# fileFormatConvertor
+# configuration file converter
 
 ## Details
 + This repository is the codebase for the API to be hosted on AWS lambda (or other SAM). <br />
